@@ -339,6 +339,19 @@ var (
 )
 
 // =============================================================================
+// HTTP ERRORS (E14xxx) - HTTP client errors
+// These are errors unique to HTTP client operations
+// =============================================================================
+var (
+	E14001 = ErrorCode{"E14001", "http-invalid-url", "invalid url"}
+	E14002 = ErrorCode{"E14002", "http-request-failed", "request failed (network error)"}
+	E14003 = ErrorCode{"E14003", "http-timeout-exceeded", "timeout exceeded"}
+	E14004 = ErrorCode{"E14004", "http-invalid-method", "invalid http method"}
+	E14005 = ErrorCode{"E14005", "http-failed-url-decode", "URL decode failed"}
+	E14006 = ErrorCode{"E14006", "http-failed-json-encoding", "JSON encoding failed"}
+)
+
+// =============================================================================
 //	DB ERRORS (E17xxx) - DB-specific domain errors
 // These are errors unique to database operations
 // =============================================================================
