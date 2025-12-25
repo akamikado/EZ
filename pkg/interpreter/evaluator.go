@@ -151,6 +151,7 @@ var validModules = map[string]bool{
 	"json":    true, // JSON encoding/decoding
 	"binary":  true, // Binary encoding/decoding for integers and floats
 	"db": 		 true, // Simple key-value database
+	"http": 	 true, // HTTP client for web requests
 }
 
 // isValidModule checks if a module name is valid (either standard library or user-created)

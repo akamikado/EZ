@@ -4657,7 +4657,12 @@ func (tc *TypeChecker) getModuleMultiReturnTypes(moduleName, funcName string) []
 		case "get":
 			return []string{"string", "bool"}
 		}
+
+	case "http":
+		switch funcName {
+		}
 	}
+	
 	return nil
 }
 
@@ -5581,6 +5586,13 @@ func (tc *TypeChecker) isDBFunction(name string) bool {
 	return dbFuncs[name]
 }
 
+func (tc *TypeChecker) isHttpFunction(name string) bool {
+	dbFuncs := map[string]bool{
+
+	}
+	return dbFuncs[name]
+}
+
 // isBytesFunction checks if a function name exists in the bytes module
 func (tc *TypeChecker) isBytesFunction(name string) bool {
 	bytesFuncs := map[string]bool{
@@ -5703,6 +5715,8 @@ func (tc *TypeChecker) isModuleFunction(moduleName, funcName string) bool {
 		return tc.isBinaryFunction(funcName)
 	case "db":
 		return tc.isDBFunction(funcName)
+	case "http":
+		return tc.isHttpFunction(funcName)
 	default:
 		// Check user-defined modules
 		if funcs, ok := tc.moduleFunctions[moduleName]; ok {
@@ -5727,7 +5741,7 @@ func (tc *TypeChecker) checkStdlibCall(member *ast.MemberExpression, call *ast.C
 	line, column := tc.getExpressionPosition(member.Member)
 
 	// Check if the module was imported (for standard library modules)
-	stdModules := map[string]bool{"std": true, "math": true, "arrays": true, "strings": true, "time": true, "maps": true, "io": true, "os": true, "bytes": true, "random": true, "json": true, "binary": true, "db": true}
+	stdModules := map[string]bool{"std": true, "math": true, "arrays": true, "strings": true, "time": true, "maps": true, "io": true, "os": true, "bytes": true, "random": true, "json": true, "binary": true, "db": true, "http": true}
 	if stdModules[moduleName] && !tc.modules[moduleName] {
 		tc.addError(errors.E4007, fmt.Sprintf("module '%s' not imported; add 'import @%s'", moduleName, moduleName), line, column)
 		return
@@ -5760,6 +5774,8 @@ func (tc *TypeChecker) checkStdlibCall(member *ast.MemberExpression, call *ast.C
 		tc.checkBinaryModuleCall(funcName, call, line, column)
 	case "db":
 		tc.checkDBModuleCall(funcName, call, line, column)
+	case "http":
+		tc.checkHttpModuleCall(funcName, call, line, column)
 	default:
 		// User-defined module - check if we have type info for it
 		tc.checkUserModuleCall(moduleName, funcName, call, line, column)
@@ -6751,6 +6767,20 @@ func (tc *TypeChecker) checkDBModuleCall(funcName string, call *ast.CallExpressi
 
 	tc.validateStdlibCall("db", funcName, call, sig, line, column)
 }
+
+func (tc *TypeChecker) checkHttpModuleCall(funcName string, call *ast.CallExpression, line, column int) {
+	signatures := map[string]StdlibFuncSig{
+
+	}
+
+	sig, exists := signatures[funcName]
+	if !exists {
+		return
+	}
+
+	tc.validateStdlibCall("http", funcName, call, sig, line, column)
+}
+
 // validateStdlibCall performs the actual validation of a stdlib call
 func (tc *TypeChecker) validateStdlibCall(moduleName, funcName string, call *ast.CallExpression, sig StdlibFuncSig, line, column int) {
 	argCount := len(call.Arguments)
