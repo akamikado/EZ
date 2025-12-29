@@ -321,6 +321,18 @@ func (tc *TypeChecker) registerBuiltinTypes() {
 	}
 	tc.types["Error"] = errorType
 	tc.types["error"] = errorType // Alias for convenience
+
+	// Built-in Response struct (for HTTP response)
+	httpResponseType := &Type{
+		Name: "HttpResponse",
+		Kind: StructType,
+		Fields: map[string]*Type{
+			"status": {Name: "int", Kind: PrimitiveType},
+			"body": 	{Name: "string", Kind: PrimitiveType},
+			"headers": {Name: "headers", Kind: MapType},
+		},
+	}
+	tc.types["HttpResponse"] = httpResponseType
 }
 
 // TypeExists checks if a type name is registered
