@@ -10,6 +10,10 @@ func filterEzFiles(cmd *cobra.Command, args []string, toComplete string) ([]cobr
 	return []cobra.Completion{"ez"}, cobra.ShellCompDirectiveFilterFileExt
 }
 
+func filterWatchArgs(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+	return []cobra.Completion{"ez"}, cobra.ShellCompDirectiveFilterFileExt | cobra.ShellCompDirectiveFilterDirs
+}
+
 var checkCmd = &cobra.Command{
 	Use:               "check [file.ez | directory]",
 	Aliases:           []string{"build"},
@@ -94,8 +98,19 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+var watchCmd = &cobra.Command{
+	Use: "watch [file|directory]",
+	Short: "Watch a file or directory for changes",
+	Long: "Watch a file or directory for changes and automatically re-runs the program when modifications are detected.",
+	Args: cobra.MaximumNArgs(1),
+	ValidArgsFunction: filterWatchArgs,
+	Hidden: true,
+	Run: func(cmd *cobra.Command, args []string) {
+	},
+}
+
 func init() {
-	rootCmd.AddCommand(replCmd, updateCmd, checkCmd, lexCmd, parseCmd, versionCmd)
+	rootCmd.AddCommand(replCmd, updateCmd, checkCmd, lexCmd, parseCmd, versionCmd, watchCmd)
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		CheckForUpdateAsync()
 	}
